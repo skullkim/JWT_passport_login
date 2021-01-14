@@ -7,6 +7,8 @@ const nunjucks = require('nunjucks');
 const favicon = require('serve-favicon');
 const passport = require('passport');
 const cookie_parser = require('cookie-parser');
+const helmet = require('helmet');
+const hpp = require('hpp');
 
 dotenv.config();
 
@@ -14,7 +16,7 @@ const app = express();
 app.set('port', process.env.PORT || 8080);
 
 
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(favicon(path.join(__dirname, '/public/apple-logo.ico')));
@@ -27,6 +29,16 @@ nunjucks.configure('views', {
 sequelize.sync({force: false})
     .then(() => console.log('success to connect DB'))
     .catch((err) => console.error(err));
+
+if(process.env.NODE_ENV === 'production'){
+    app.enable('trust proxy');
+    app.use(morgan('combined'));
+    app.use(helmet({contentSecurityPolicy: false}));
+    app.use(hpp());
+}
+else{
+    app.use(morgan('dev'));
+}
 
 const index_router = require('./routes');
 const login_router = require('./routes/user');

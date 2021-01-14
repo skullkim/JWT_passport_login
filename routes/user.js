@@ -24,7 +24,6 @@ router.post('/', async (req, res, next) => {
                 return next(loginError);
             }
             res.cookie('jwt', token, {httpOnly: true});
-            //res.render('personal', {user: req.body.id})
             res.redirect('/login/mypage');
         })
     })(req, res, next);

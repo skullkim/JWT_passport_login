@@ -5,7 +5,6 @@ exports.verifyToken = (req, res, next) => {
         const token = req.headers.cookie.slice(4);
         req.decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.data = req.decoded.id;
-        //console.log(req.decoded.id);
         return next();
     }
     catch(err){
@@ -13,7 +12,6 @@ exports.verifyToken = (req, res, next) => {
         if(err.name === 'TokenExpiredError'){
             res.redirect('/?error=Token expiration');
         }
-        //res.send('hello');
         res.redirect('/?error=Invalied token');
     }
 };
